@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "app_01_compose_coffee"
+rootProject.name = "Sumphp"
 include(":sumphp_app_01_compose_coffee")
