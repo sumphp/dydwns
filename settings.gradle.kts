@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "app_01_compose_coffee"
-include(":app")
+include(":sumphp_app_01_compose_coffee")
