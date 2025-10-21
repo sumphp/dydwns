@@ -29,6 +29,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.app_03_profile_card.R
@@ -53,7 +54,10 @@ fun HomeScreen() {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ){
-            MessageCard(Message("김용준","우송대학교 학생"))
+            Column {
+                MessageCard(Message("202310854", "컴퓨터 소프트웨어 전공"))
+                ProfileCard(Profile("김용준", "010-7161-5171"))
+            }
         }
 
     }
@@ -101,8 +105,8 @@ fun ProfileCard(data: Profile) {
             painter = painterResource(R.drawable.me),
             contentDescription = "연락처 프로필 사진",
             modifier = Modifier
-                .size(60.dp)
-                .clip(CircleShape)
+                .size(100   .dp)
+                .clip(RectangleShape)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column {
@@ -111,7 +115,7 @@ fun ProfileCard(data: Profile) {
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleMedium
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = data.intro,
                 color = MaterialTheme.colorScheme.onBackground,
