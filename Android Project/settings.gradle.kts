@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "sumphp"
 include(":sumphp")
 include(":sumphp:app_01_compose_coffee")
+include(":sumphp:app_02_kakao_empw")
