@@ -107,7 +107,6 @@ fun FeedScreen(modifier: Modifier = Modifier) {
 
     val firestore = FirebaseFirestore.getInstance()
 
-    // 2. 화면이 켜질 때 '구독' 시작 실시간으로
     DisposableEffect(Unit) {
         val listener = firestore.collection("posts")
             .addSnapshotListener { snapshot, e ->
@@ -118,7 +117,6 @@ fun FeedScreen(modifier: Modifier = Modifier) {
                 if (snapshot != null) {
                     posts.clear()
                     for (document in snapshot) {
-                        // 데이터를 Post 객체로 변환
                         val post = document.toObject(Post::class.java)
                         posts.add(post)
                     }
@@ -147,7 +145,6 @@ fun FeedScreen(modifier: Modifier = Modifier) {
     }
 }
 
-// --- 4. 게시물 카드 ---
 @Composable
 fun CodyPostCard(post: Post) {
     Card(
@@ -203,7 +200,6 @@ fun UploadScreen() {
 
     val context = LocalContext.current
 
-    // 파이어베이스 도구 준비
     val storage = FirebaseStorage.getInstance()
     val firestore = FirebaseFirestore.getInstance()
 
@@ -219,7 +215,6 @@ fun UploadScreen() {
         Text("NEW CLOTH", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 이미지 미리보기
         AsyncImage(
             model = selectedImageUri,
             contentDescription = "선택된 코디 사진",
@@ -228,7 +223,6 @@ fun UploadScreen() {
                 .height(300.dp)
                 .background(Color.LightGray)
                 .clickable {
-                    // 업로드 중이 아닐 때만 사진 변경 가능
                     if (!isUploading) galleryLauncher.launch("image/*")
                 },
             contentScale = ContentScale.Crop,
@@ -242,7 +236,7 @@ fun UploadScreen() {
             onValueChange = { description = it },
             label = { Text("코디 설명...") },
             modifier = Modifier.fillMaxWidth().height(150.dp),
-            enabled = !isUploading // 업로드 중엔 글 수정 불가
+            enabled = !isUploading
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -253,30 +247,24 @@ fun UploadScreen() {
                 if (selectedImageUri == null) return@Button
                 isUploading = true
 
-                // 1. 파일 이름 만들기
                 val fileName = "post_${UUID.randomUUID()}.jpg"
 
-                // 2. Storage의 'images' 폴더 안에 저장 설정
                 val storageRef = storage.reference.child("images/$fileName")
 
-                // 3. 사진 업로드 시작!
                 storageRef.putFile(selectedImageUri!!)
                     .addOnSuccessListener {
-                        // 4. 업로드 성공하면 -> 다운로드 주소(URL)
                         storageRef.downloadUrl.addOnSuccessListener { uri ->
                             val imageUrl = uri.toString()
 
-                            // 5. Firestore에 저장할 데이터 합치기
                             val newPost = Post(
-                                id = UUID.randomUUID().toString(), // 게시물 고유 ID
+                                id = UUID.randomUUID().toString(),
                                 userNickname = "sumphp",
                                 userProfileImageUrl = "",
-                                imageUrl = imageUrl,      // 방금 얻은 사진 주소
+                                imageUrl = imageUrl,
                                 description = description,
                                 likes = 0
                             )
 
-                            // 6. posts 컬렉션에 데이터 저장
                             firestore.collection("posts")
                                 .add(newPost)
                                 .addOnSuccessListener {
@@ -297,11 +285,10 @@ fun UploadScreen() {
                     }
             },
             modifier = Modifier.fillMaxWidth(),
-            // 사진이 있고 & 업로드 중이 아닐 때만 버튼 활성화
             enabled = selectedImageUri != null && !isUploading
         ) {
             if (isUploading) {
-                Text("업로드 중...") // 로딩 중일 때
+                Text("업로드 중...")
             } else {
                 Text("CLOTH-UP! (업로드)")
             }
@@ -312,12 +299,10 @@ fun UploadScreen() {
 // --- 6. 프로필 화면 ---
 @Composable
 fun ProfileScreen() {
-    // 1. 내 게시물만 담을 리스트
     val myPosts = remember { mutableStateListOf<Post>() }
 
     val firestore = FirebaseFirestore.getInstance()
 
-    // 2. 화면 켜질 때 내 글만 필터링
     DisposableEffect(Unit) {
         val listener = firestore.collection("posts")
             // 내 게시물만 가져오기
