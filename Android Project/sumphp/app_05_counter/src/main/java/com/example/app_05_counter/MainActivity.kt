@@ -84,7 +84,6 @@ fun StopWatchApp() {
         }
     }
 }
-
 private fun formatTime(timeInMillis: Long): String {
     val minutes = (timeInMillis / 1000) / 60
     val seconds = (timeInMillis / 1000) % 60
